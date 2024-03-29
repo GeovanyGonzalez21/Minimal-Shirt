@@ -434,43 +434,32 @@
                         </div>
                         <div class="form-group form-group-textarea mb-md-0">
                             <!-- Caja para mandar archivos -->
-                            <input type="file" class="form-control" id="fileUpload" type="fileUpload" placeholder="Solamente archivos: (PNG,JPG, SVG, AI, PDF, PSD)" data-sb-validations="required">
+                            <input type="file" class="form-control" id="fileUpload" accept="image/jpeg, image/png" placeholder="Solamente archivos: (PNG,JPG)" data-sb-validations="required">
                             <div class="invalid-feedback" data-sb-feedback="file:required">Necesitamos que envíes un archivo con tu diseño.</div>
-                            <small class="section-heading text">Solamente archivos permitidos: PNG, JPG, SVG, AI, PDF, PSD</small>
+                            <small class="section-heading text">Solamente archivos permitidos: PNG, JPG</small>
 
                         </div>
                     </div>
                 </div>
-            </form>
+        <!-- Sección para mensajes de error -->
+        <div class="d-none" id="submitErrorMessage">
+            <div class="text-center text-danger mb-3">Error al enviar el mensaje!</div>
         </div>
-    </section>
-    
-                <!-- Submit success message-->
-                <!---->
-                <!-- This is what your users will see when the form-->
-                <!-- has successfully submitted-->
-                <div class="d-none" id="submitSuccessMessage">
-                    <div class="text-center text-white mb-3">
-                        <div class="fw-bolder">Form submission successful!</div>
-                        To activate this form, sign up at
-                        <br />
-                        <a
-                            href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
-                    </div>
-                </div>
-                <!-- Submit error message-->
-                <!---->
-                <!-- This is what your users will see when there is-->
-                <!-- an error submitting the form-->
-                <div class="d-none" id="submitErrorMessage">
-                    <div class="text-center text-danger mb-3">Error al enviar el meensaje!</div>
-                </div>
-                <!-- Submit Button-->
-                <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase disabled"
-                        id="submitButton" type="submit">Emviar mensaje</button></div>
-            </form>
+        <!-- Submit success message-->
+        <div class="d-none" id="submitSuccessMessage">
+            <div class="text-center text-white mb-3">
+                <div class="fw-bolder">Correo electrónico enviado correctamente</div>
+                <br />
+                <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+            </div>
         </div>
-    </section>
+        <!-- Submit Button-->
+        <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase enabled"
+                id="submitButton" type="submit">Enviar mensaje</button></div>
+    </form>
+</div>
+</section>
+ 
     <!-- Footer-->
     <footer class="footer py-4">
         <div class="container">
