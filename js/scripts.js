@@ -104,7 +104,7 @@ function validarCampo(valor, campo) {
 
     return valido;
 }
-
+//Valir email
 function validarEmail(input) {
     var regex = /\S+@\S+\.\S+/;
     //Con esto eliminamos espaciados en la cadena
@@ -121,7 +121,7 @@ function validarEmail(input) {
         document.getElementById("email").classList.add("is-invalid"); // Agrega la clase de inválido
     }
 }
-
+//Validar nombres
 function ValidarNombre(input) {
     // Realizamos la expresión regular
     // Acepta tildes tantos en los nombres y apellidos
@@ -141,3 +141,30 @@ function ValidarNombre(input) {
     }
 }
 
+//Validar direccion
+     //Realizamos la expresión regular
+     //Acepta parentesis, tildes, #
+     //No acepta simbolos commo $, y derivados, tampoco corchetes
+    function ValidarDireccion(direccion) {
+    var regex = /^[A-Za-zá-íóúüíóúüÜÉÑñ0-9\s,()"'-]+$/;
+    if (regex.test(direccion)) {
+        document.getElementById("mensajeError").textContent = ""; // Borra el mensaje de error
+        document.getElementById("mensajeExito").textContent = "Dirección escrita de forma correcta";
+        document.getElementById("direccion").classList.remove("is-invalid"); // Quita la clase de inválido si estaba presente
+        document.getElementById("direccion").classList.add("is-valid"); // Agrega la clase de válido
+    } else {
+        document.getElementById("mensajeError").textContent = "Ingrese una dirección correcta";
+        document.getElementById("mensajeExito").textContent = ""; // Borra el mensaje de éxito
+        document.getElementById("direccion").classList.remove("is-valid"); // Quita la clase de válido si estaba presente
+        document.getElementById("direccion").classList.add("is-invalid"); // Agrega la clase de inválido
+    }
+}
+//Función para cambiar el color de los cuadros de texto
+function updateColor() {
+    var colorSelector = document.getElementById("colorSelector");
+    var colorBox = document.getElementById("colorBox");
+    var selectedColor = colorSelector.value;
+    colorBox.style.backgroundColor = selectedColor;
+    // Cambiar el color del texto según la selección
+    colorBox.style.color = (selectedColor === "Negro" || selectedColor === "Dorado") ? "white" : "black";
+}    

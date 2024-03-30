@@ -11102,6 +11102,8 @@ section#contact {
 }
 section#contact .section-heading {
   color: #fff;
+  font-size: 18px;
+
 }
 section#contact form#contactForm .form-group {
   margin-bottom: 1.5rem;
@@ -11194,4 +11196,11 @@ section#contact form#contactForm :-ms-input-placeholder {
 #message,
 #fileUpload {
     margin-bottom: 20px; /*Separamos los dos bloques*/
+}
+.form-group select,
+.form-group small {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 30px; /* Ajusta este valor según tu preferencia */
+    font-size: 20px; /* Tamaño de letra de las opciones */
 }

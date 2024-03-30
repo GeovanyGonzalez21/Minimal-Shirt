@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -385,32 +386,107 @@
             </div>
         </div>
     </div>
+    <?php
+require 'vendor/autoload.php'; // Agregar esta línea para cargar las clases de Swift Mailer
+
+// Verifica si se ha enviado el formulario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Obtiene los datos del formulario
+    $nombre = $_POST['nombre'];
+    $email = $_POST['email'];
+    $telefono = $_POST['phone'];
+    $mensaje = $_POST['message'];
+    $color = $_POST['Color'];
+    $talla = $_POST['talla'];
+    $direccion = $_POST['direccion'];
+
+    // Manejo del archivo cargado
+    $archivo_nombre = $_FILES['fileUpload']['name'];
+    $archivo_temporal = $_FILES['fileUpload']['tmp_name'];
+    $archivo_destino = "archivos_subidos/" . $archivo_nombre;
+
+    // Mueve el archivo cargado a la ubicación deseada
+    if (move_uploaded_file($archivo_temporal, $archivo_destino)) {
+        // Configura el correo electrónico
+        $destinatario = "aminimalshirts@gmail.com";
+        $asunto = "Nuevo mensaje de contacto";
+
+        // Construye el cuerpo del mensaje
+        $cuerpoMensaje = "Nombre: $nombre\n";
+        $cuerpoMensaje .= "Email: $email\n";
+        $cuerpoMensaje .= "Teléfono: $telefono\n";
+        $cuerpoMensaje .= "Dirección: $direccion\n";
+        $cuerpoMensaje .= "Mensaje: $mensaje\n";
+        $cuerpoMensaje .= "Archivo adjunto: $archivo_nombre\n";
+        $cuerpoMensaje .= "Color: $color\n";
+        $cuerpoMensaje .= "Talla: $talla\n";
+
+        // Configuración para SMTP de Google
+        $smtpHost = 'smtp.gmail.com';
+        $smtpPort = 587; // Puerto para STARTTLS
+        $smtpUsername = 'aminimalshirts@gmail.com';
+        $smtpPassword = 'emzd dloh ttsk jufv';
+
+        // Crea un transporte SMTP
+        $transport = (new Swift_SmtpTransport($smtpHost, $smtpPort, 'tls'))
+            ->setUsername($smtpUsername)
+            ->setPassword($smtpPassword);
+
+        // Crea el mailer utilizando el transporte SMTP
+        $mailer = new Swift_Mailer($transport);
+
+        // Crea el mensaje
+        $message = (new Swift_Message($asunto))
+            ->setFrom([$email => $nombre])
+            ->setTo([$destinatario])
+            ->setBody($cuerpoMensaje);
+            $message->attach(Swift_Attachment::fromPath($archivo_destino));
+
+
+        // Envía el correo electrónico
+        if ($mailer->send($message)) {
+            echo '<div class="text-center text-success mb-3">Correo electrónico enviado correctamente</div>';
+            //Borramos la imagen de nuestro archivo temporal.
+            unlink($archivo_destino);
+        } else {
+            echo '<div class="text-center text-danger mb-3">Error al enviar el correo electrónico</div>';
+        }
+    } else {
+        echo '<div class="text-center text-danger mb-3">Error al mover el archivo cargado</div>';
+    }
+}
+?>
+
     <!-- Contact-->
     <section class="page-section" id="contact">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">Contáctanos</h2>
-                <h3 class="section-heading text">¿Tienes alguna idea que te haga vestir fantástico?</h3>
-                <br><br>
-            </div>
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">CONTACTANOS</h2>
+            <h3 class="section-heading text">¿Tienes alguna idea que te haga vestir fantástico?</h3>
+            <br><br>
+        </div>
+        <!-- Utilizaremos PHP para realizar un envío de correos, con el método post -->
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" enctype="multipart/form-data">
+            <div class="row align-items-stretch mb-5">
             <!-- Utilizaremos PHP para realizar un envío de correos, con el método post -->
-            <form id="contactForm" action="enviar_Email.php" method="POST">
                 <div class="row align-items-stretch mb-5">
                     <div class="col-md-6">
                         <div class="form-group">
                             <!-- Name input -->
-                            <input class="form-control" id="nombre" type="text" placeholder="Nombre completo*" data-sb-validations="required" oninput="ValidarNombre(this)" />
+                            <input class="form-control" id="nombre" name="nombre" type="text" placeholder="Nombre completo*" data-sb-validations="required" oninput="ValidarNombre(this)" />
                             <div class="invalid-feedback" data-sb-feedback="nombre:nombre">Tu nombre no es válido</div> <!-- Mensaje específico para el error en el formato de nombre -->
-                            <div id="mensajeError"></div> <!-- Mensaje de error para números inválidos -->
+                            <div id="mensajeError"></div> <!-- Mensaje de error para nombres inválidos -->
                             <div id="mensajeExito"></div> <!-- Mensaje de éxito para nombres válidos -->
                         </div>
-                        <div class="form-group">
+                        <br>
+                        <div class="form-group mb-md-0">
                             <!-- Email address input -->
-                            <input class="form-control" id="email" type="email" placeholder="Correo electrónico*" data-sb-validations="required" oninput="validarEmail(this)" />
+                            <input class="form-control" id="email" name="email" type="text" placeholder="Email*" data-sb-validations="required" oninput="ValidarEmail(this)" />
                             <div class="invalid-feedback" data-sb-feedback="email:email">Tu correo no es válido</div> <!-- Mensaje específico de error para el formato de correo -->
                             <div id="mensajeError"></div> <!-- Mensaje de error para correos inválidos -->
                             <div id="mensajeExito"></div> <!-- Mensaje de éxito para correos válidos -->
                         </div>
+                        <br>
                         <div class="form-group mb-md-0">
                             <!-- Phone number input -->
                             <div class="input-group">
@@ -419,45 +495,71 @@
                                         <img src="assets\img\contact\Bandera.png" alt="Bandera de Guatemala" style="height: 30px; margin-right: 10px;">+502
                                     </span> <!-- Cuadro que indica el código de Guatemala -->
                                 </div>
-                                <input class="form-control" id="phone" type="tel" placeholder="Número de teléfono" data-sb-validations="required" oninput="validarNumero(this)" />
+                                <input class="form-control" id="phone" name="phone" type="tel" placeholder="Número de teléfono" data-sb-validations="required" oninput="validarNumero(this)" />
                                 <div class="invalid-feedback" data-sb-feedback="phone:phone">Tu celular no es válido</div> <!-- Mensaje de error específico para formato de teléfono inválido -->
                                 <div id="mensajeError"></div> <!-- Mensaje de error para números inválidos -->
                                 <div id="mensajeExito"></div> <!-- Mensaje de éxito para números válidos -->
                             </div>
                         </div>
+                        <br>
+                        <div class="form-group mb-md-0">
+                            <!--Address input-->
+                            <input class="form-control" id="direccion" name="direccion" type="text" placeholder="Dirección completa*" data-sb-validations="required" oninput="ValidarDireccion(this.value)" />
+                             <div class="invalid-feedback" data-sb-feedback="direccion:direccion">Tu dirección no es válida</div> <!-- Mensaje específico de error para el formato de dirección -->
+                            <div id="mensajeError"></div> <!-- Mensaje de error para direcciones inválidas -->
+                            <div id="mensajeExito"></div> <!-- Mensaje de éxito para direcciones válidas -->
+                        </div>
                     </div>
+                    <br>
                     <div class="col-md-6">
                         <div class="form-group form-group-textarea mb-md-0">
                             <!-- Message input -->
-                            <textarea class="form-control" id="message" placeholder="Escribe aquí tu mensaje*" data-sb-validations="required"></textarea>
+                            <textarea class="form-control" id="message" name="message" placeholder="Escribe aquí tu mensaje*" data-sb-validations="required"></textarea>
                             <div class="invalid-feedback" data-sb-feedback="message:required" style="display: none;">Necesitamos que escribas un mensaje.</div>
                         </div>
                         <div class="form-group form-group-textarea mb-md-0">
                             <!-- Caja para mandar archivos -->
-                            <input type="file" class="form-control" id="fileUpload" accept="image/jpeg, image/png" placeholder="Solamente archivos: (PNG,JPG)" data-sb-validations="required">
+                            <input type="file" class="form-control" id="fileUpload" name="fileUpload" placeholder="Solamente archivos: (PNG,JPG)" accept=".png, .jpg"  data-sb-validations="required">
                             <div class="invalid-feedback" data-sb-feedback="file:required">Necesitamos que envíes un archivo con tu diseño.</div>
                             <small class="section-heading text">Solamente archivos permitidos: PNG, JPG</small>
-
+                        </div>
+                        <br>
+                        <div class="form-group mb-md-0">
+                            <!--Caja para elección de color-->
+                            <small class="section-heading text">Color de tu playera:  </small>
+                            <select name="Color">
+                                <option value="Negro">Negro</option>
+                                <option value="Blanco">Blanco</option>
+                                <option value="Dorado">Dorado</option>
+                            </select>
+                            
+                            <!--Caja para elección de talla-->
+                            <small class="section-heading text">Talla de tu playera:  </small>
+                            <select name="talla">
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                            </select>
                         </div>
                     </div>
                 </div>
-        <!-- Sección para mensajes de error -->
-        <div class="d-none" id="submitErrorMessage">
-            <div class="text-center text-danger mb-3">Error al enviar el mensaje!</div>
-        </div>
-        <!-- Submit success message-->
-        <div class="d-none" id="submitSuccessMessage">
-            <div class="text-center text-white mb-3">
-                <div class="fw-bolder">Correo electrónico enviado correctamente</div>
-                <br />
-                <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+      <!-- Sección para mensajes de error -->
+      <div class="d-none" id="submitErrorMessage">
+                <div class="text-center text-danger mb-3">Error al enviar el mensaje!</div>
             </div>
-        </div>
-        <!-- Submit Button-->
-        <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase enabled"
-                id="submitButton" type="submit">Enviar mensaje</button></div>
-    </form>
-</div>
+            <!-- Mensaje de éxito al enviar el formulario -->
+            <div class="d-none" id="submitSuccessMessage">
+                <div class="text-center text-white mb-3">
+                    <div class="fw-bolder">Correo electrónico enviado correctamente</div>
+                </div>
+            </div>
+            <!-- Botón de enviar formulario -->
+            <div class="text-center">
+                <button class="btn btn-primary btn-xl text-uppercase enabled" id="submitButton" type="submit">Enviar mensaje</button>
+            </div>
+        </form>
+    </div>
 </section>
  
     <!-- Footer-->
